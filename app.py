@@ -18,6 +18,7 @@ df['sales'] = df['sales'].str.replace(',','')
 df['sales'] = df['sales'].str.replace('$', '')
 df['sales'] = pd.to_numeric(df['sales'])
 
+# Colors for the Dash page
 colors = {
     'background': '#0c1126',
     'otherBg': '#0e1730',
@@ -31,103 +32,116 @@ colors = {
     'w_line': '#E34707'
 }
 
+# Title header
+header = html.H1("Soul Foods Pink Morsels Sales by Date",
+            style={'textAlign': 'center', 'color': colors['primaryTxt']})
+
+# Visualization
+visualization = dcc.Graph(
+        id='sales-graph'
+)
+
+# Region picker
+region_picker = html.Div([
+    html.H2("Configure Region",
+            style={'textAlign': 'center', 'color': colors['primaryTxt']}),
+
+    dcc.RadioItems(
+        [
+            {
+                'label': html.Div('All',
+                    style={'color': colors['secondaryTxt']}),
+                'value': 'All'
+            },
+            {
+                'label': html.Div('North',
+                    style={'color': colors['secondaryTxt']}),
+                'value': 'North'
+            },
+            {
+                'label': html.Div('East',
+                    style={'color': colors['secondaryTxt']}),
+                'value': 'East'
+            },
+            {
+                'label': html.Div('South',
+                    style={'color': colors['secondaryTxt']}),
+            'value': 'South'
+            },
+            {
+                'label': html.Div('West',
+                    style={'color': colors['secondaryTxt']}),
+                'value': 'West'
+            }
+        ],
+        'All', id='region-button', inline=True
+    )],
+    style={'width': '48%', 'display': 'inline-block',
+           'textAlign': 'center'}
+)
+
+# Year picker
+year_picker = html.Div([
+    html.H2("Configure Year",
+            style={'textAlign': 'center', 'color': colors['primaryTxt']}),
+
+    dcc.RadioItems(
+        [
+            {
+                'label': html.Div('All',
+                        style={'color': colors['secondaryTxt']}),
+                'value': 'All'
+            },
+            {
+                'label': html.Div('2018',
+                        style={'color': colors['secondaryTxt']}),
+                'value': '2018'
+            },
+            {
+                'label': html.Div('2019',
+                        style={'color': colors['secondaryTxt']}),
+                'value': '2019'
+            },
+            {
+                'label': html.Div('2020',
+                        style={'color': colors['secondaryTxt']}),
+                'value': '2020'
+            },
+            {
+                'label': html.Div('2021',
+                        style={'color': colors['secondaryTxt']}),
+                'value': '2021'
+            },
+            {
+                'label': html.Div('2022',
+                    style={'color': colors['secondaryTxt']}),
+                'value': '2022'
+            }],
+        'All', id='year-button', inline=True
+    )],
+    style={'width': '48%', 'float': 'right', 'display': 'inline-block',
+           'textAlign': 'center'}
+)
+
+# Dash webpage layout
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
 
     html.Div(style={"height": "15px"}),
 
-    # Title
-    html.H1("Soul Foods Pink Morsels Sales by Date",
-            style={'textAlign': 'center', 'color': colors['primaryTxt']}),
+    # Title header (reference)
+    header,
 
-    # Configure Region and Year
-    html.Div([
+    # Configure Region
+    region_picker,
 
-        html.H2("Configure Region",
-                style={'textAlign': 'center', 'color': colors['primaryTxt']}),
-
-        dcc.RadioItems(
-            [
-                {
-                    'label': html.Div('All',
-                        style={'color': colors['secondaryTxt']}),
-                    'value': 'All'
-                },
-                {
-                    'label': html.Div('North',
-                        style={'color': colors['secondaryTxt']}),
-                    'value': 'North'
-                },
-                {
-                    'label': html.Div('East',
-                        style={'color': colors['secondaryTxt']}),
-                    'value': 'East'
-                },
-                {
-                    'label': html.Div('South',
-                        style={'color': colors['secondaryTxt']}),
-                    'value': 'South'
-                },
-                {
-                    'label': html.Div('West',
-                        style={'color': colors['secondaryTxt']}),
-                    'value': 'West'
-                }
-            ],
-            'All', id='region-button', inline=True
-        )],
-        style={'width': '48%', 'display': 'inline-block',
-               'textAlign': 'center'}
-    ),
-
-    html.Div([
-        html.H2("Configure Year",
-                style={'textAlign': 'center', 'color': colors['primaryTxt']}),
-
-        dcc.RadioItems(
-            [
-                {
-                    'label': html.Div('All',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': 'All'
-                },
-                {
-                    'label': html.Div('2018',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': '2018'
-                },
-                {
-                    'label': html.Div('2019',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': '2019'
-                },
-                {
-                    'label': html.Div('2020',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': '2020'
-                },
-                {
-                    'label': html.Div('2021',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': '2021'
-                },
-                {
-                    'label': html.Div('2022',
-                            style={'color': colors['secondaryTxt']}),
-                    'value': '2022'
-                }],
-            'All', id='year-button', inline=True
-        )],
-        style={'width': '48%', 'float': 'right', 'display': 'inline-block',
-               'textAlign': 'center'}
-    ),
+    # Configure Year
+    year_picker,
 
     html.Div(style={"height": "30px"}),
 
-    dcc.Graph(
-        id='sales-graph'
-    ),
-
-])
+    visualization
+    ]
+)
 
 @callback(
     Output('sales-graph', 'figure'),
